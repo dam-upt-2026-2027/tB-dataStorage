@@ -73,7 +73,75 @@ class MainActivity : AppCompatActivity() {
             lerCache()
         }
 
+
+        // Tarefa 4 - Internal Storage
+        viewBinding.btWrite4.setOnClickListener {
+            // escreve dados na Internal Storage
+            escreveInternalStorage()
+            // esconder teclado
+            escondeTeclado(it)
+        }
+        viewBinding.btRead4.setOnClickListener {
+            // ler os dados guardados na Internal Storage
+            lerInternalStorage()
+        }
+
     }
+
+
+    /**
+     * ler os dados guardados na Internal Storage
+     */
+    private fun lerInternalStorage() {
+        val directory: File = filesDir
+        val file = File(directory, "dadosInternalStorage.txt")
+        try {
+            val fi = FileInputStream(file)
+            val sc = Scanner(fi)
+            val nome = sc.nextLine()
+            val idade = sc.nextLine()
+            sc.close()
+            fi.close()
+
+            // mostrar os dados
+            Snackbar.make(
+                viewBinding.root,
+                "Você chama-se ${
+                    nome.toString().uppercase()
+                } e tem $idade anos! - Internal Storage",
+                Snackbar.LENGTH_LONG
+            ).show()
+        } catch (e: FileNotFoundException) {
+            Toast.makeText(this, getString(R.string.internal_storage_vazia), Toast.LENGTH_LONG)
+                .show()
+        }
+
+    }
+
+    /**
+     * escrever dados na Internal Storage
+     */
+    private fun escreveInternalStorage() {
+        // endereço da pasta onde será gerado o ficheiro
+        // associado à área de atuação da aplicação
+        val directory: File = filesDir
+        // nome do ficheiro na Internal Storage
+        val file: File = File(directory, "dadosInternalStorage.txt")
+        try {
+            val fo: FileOutputStream = FileOutputStream(file)
+            val ps: PrintStream = PrintStream(fo)
+            ps.println(viewBinding.editText4a.text)
+            ps.println(viewBinding.editText4b.text)
+            ps.close()
+            fo.close()
+
+            // neste caso, vamos mostrar uma mensagem de 'conforto' ao utilizador
+            Toast.makeText(this, getString(R.string.dados_guardados), Toast.LENGTH_SHORT).show()
+        } catch (e: FileNotFoundException) {
+            Toast.makeText(this, getString(R.string.escritaErradaCache), Toast.LENGTH_LONG).show()
+        }
+    }
+
 
     /**
      * Escreve na cache do telemóvel
