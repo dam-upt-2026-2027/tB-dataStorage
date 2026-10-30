@@ -20,5 +20,6 @@
     <string name="external_storage_vazia">A external storage está vazia</string>
     <string name="escritaErradaExternalStorage">Não consegui escrever na ExternalStorage</string>
 
+    <string name="texto">Introduziu %1$s</string>
 
 </resources>
