@@ -11,6 +11,13 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.snackbar.Snackbar
 import pt.uptomar.dam2026.datastorage.databinding.ActivityMainBinding
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.PrintStream
+import java.util.Scanner
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -51,6 +58,70 @@ class MainActivity : AppCompatActivity() {
         viewBinding.btRead2.setOnClickListener {
             // ler os dados guardados na Shared Preferences com múltiplos ficheiros
             lerSharedPreferencesMultiFich()
+        }
+
+
+        // Tarefa 3 - Cache
+        viewBinding.btWrite3.setOnClickListener {
+            // escreve dados na Cache
+            escreveCache()
+            // esconder teclado
+            escondeTeclado(it)
+        }
+        viewBinding.btRead3.setOnClickListener {
+            // ler os dados guardados na Cache
+            lerCache()
+        }
+
+    }
+
+    /**
+     * Escreve na cache do telemóvel
+     */
+    private fun escreveCache() {
+        // endereço da pasta onde será gerado o ficheiro
+        // associado à área de atuação da aplicação
+        val directory: File = cacheDir
+        // nome do ficheiro na Cache
+        val file: File = File(directory, "dadosCache.txt")
+        try {
+            val fo: FileOutputStream = FileOutputStream(file)
+            val ps: PrintStream = PrintStream(fo)
+            ps.println(viewBinding.editText3a.text)
+            ps.println(viewBinding.editText3b.text)
+            ps.close()
+            fo.close()
+
+            // neste caso, vamos mostrar uma mensagem de 'conforto' ao utilizador
+            Toast.makeText(this, getString(R.string.dados_guardados), Toast.LENGTH_SHORT).show()
+        } catch (e: FileNotFoundException) {
+            Toast.makeText(this, getString(R.string.escritaErradaCache), Toast.LENGTH_LONG).show()
+        }
+
+    }
+
+    /**
+     * lê dados da cache do telemóvel
+     */
+    private fun lerCache() {
+        val directory: File = cacheDir // <=> getCacheDir()
+        val file = File(directory, "dadosCache.txt")
+        try {
+            val fi = FileInputStream(file)
+            val sc = Scanner(fi)
+            val nome = sc.nextLine()
+            val idade = sc.nextLine()
+            sc.close()
+            fi.close()
+
+            // mostrar os dados
+            Snackbar.make(
+                viewBinding.root,
+                "Você chama-se ${nome.toString().uppercase()} e tem $idade anos!",
+                Snackbar.LENGTH_LONG
+            ).show()
+        } catch (e: FileNotFoundException) {
+            Toast.makeText(this, getString(R.string.cache_vazia), Toast.LENGTH_LONG).show()
         }
 
     }
